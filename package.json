@@ -5,11 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "parcel test test/index.html"
+    "test": "semistandard ."
   },
   "repository": {
     "type": "git",
-    "url": "https://www.github.com/BroofaJS"
+    "url": "https://www.github.com/broofa/usestorage"
   },
   "peerDependencies": {
     "react": "> 16.8"
@@ -27,9 +27,9 @@
   "author": "Robert Kieffer <robert@broofa.com>",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "7.27.0",
     "parcel": "2.0.0-nightly.679",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "semistandard": "16.0.0"
   }
 }
