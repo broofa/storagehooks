@@ -26,7 +26,7 @@ function App () {
 
   return (
     <>
-      <h2><code>usestorage</code> test</h2>
+      <h2><code>storagehooks</code> test</h2>
 
       <div style={{ display: 'grid', gap: '1em', gridTemplateColumns: '1fr 2fr' }}>
         <label>sessionStorage.sessionValue</label>

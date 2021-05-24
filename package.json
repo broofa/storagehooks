@@ -1,5 +1,5 @@
 {
-  "name": "usestorage",
+  "name": "storagehooks",
   "version": "1.0.0",
   "description": "React hooks for accessing state in `localStorage` and `sessionStorage`, with support for encoding values as JSON and tracking `storage` events",
   "main": "index.js",
@@ -9,20 +9,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://www.github.com/broofa/usestorage"
+    "url": "https://www.github.com/broofa/storagehooks"
   },
   "peerDependencies": {
     "react": "> 16.8"
   },
   "keywords": [
-    "webstorage",
-    "localstorage",
-    "sessionstorage",
-    "react",
     "hook",
     "hooks",
+    "localstorage",
+    "react",
+    "sessionstorage",
+    "storagehooks",
     "usestate",
-    "usestorage"
+    "usestorage",
+    "webstorage"
   ],
   "author": "Robert Kieffer <robert@broofa.com>",
   "license": "ISC",
