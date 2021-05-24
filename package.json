@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "semistandard ."
+    "lint": "semistandard ."
   },
   "repository": {
     "type": "git",
