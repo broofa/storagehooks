@@ -35,7 +35,7 @@ function App () {
         <label>sessionStorage.sessionValue (clone)</label>
         <input value={sessionValueClone ?? ''} onChange={e => setSessionValueClone(e.target.value)} />
 
-        <label>localStorage.sessionValue</label>
+        <label>localStorage.localValue</label>
         <input value={localValue ?? ''} onChange={e => setLocalValue(e.target.value)} />
 
         <label>localStorage.booleanValue</label>
