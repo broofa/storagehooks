@@ -1,4 +1,6 @@
-test 
-dist
+.eslintignore
+.eslintrc.js
 .parcel-cache
+dist
+test 
 workspace.code-workspace
