@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
  * React hook for getting/setting state in storage object.  Monitors
  * window.storage events for extrenal changes.
  */
-function useStorage (storage, key, initialState) {
+function useStorage (storage, key, initialState, options = {}) {
   /**
    * Parse a JSON value w/out throwing an error.  Returns is null for invalid JSON
    * strings.
@@ -13,7 +13,7 @@ function useStorage (storage, key, initialState) {
     try {
       return JSON.parse(json);
     } catch (err) {
-      console.error(new Error(`"${key}" set to non-JSON value (${json})`));
+      console.error(new Error(`"${key}" has non-JSON value (${json}). Using null instead.`));
       return null;
     }
   }
@@ -28,21 +28,32 @@ function useStorage (storage, key, initialState) {
   }
 
   function _setValue (v) {
+    const oldValue = storage.getItem(key);
+    const newValue = v == null ? null : JSON.stringify(v);
+
     if (v == null) {
       storage.removeItem(key);
     } else {
-      let newValue = v ?? initialState;
-      newValue = JSON.stringify(v);
       storage.setItem(key, newValue);
+    }
 
-      // Propagate in this window since storage events aren't .
+    // If we're not both listening and dispatching, we need to set the value directly
+    if (!options.listen || !options.dispatch) {
+      setValue(v);
+      return;
+    }
+
+    if (options.dispatch ?? true) {
+      // ... otherwise we can dispatch the event and let the listener our listener
+      // update the value for us (allowing for a consistent control flow regardless
+      // of where the value change originates from)
       const e = new window.StorageEvent('storage');
       e.initStorageEvent(
         'storage',
         false,
         false,
         key,
-        value == null ? null : JSON.stringify(value),
+        oldValue,
         newValue,
         String(window.location),
         storage
@@ -53,9 +64,12 @@ function useStorage (storage, key, initialState) {
   }
 
   useEffect(() => {
+    if (!(options.listen ?? true)) return;
     window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, []);
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, [options.listen, options.dispatch]);
 
   return [value, _setValue];
 }

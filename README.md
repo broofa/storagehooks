@@ -6,10 +6,10 @@ React hooks for connecting component state to state in `localStorage` and
 Features:
   * Supports `localStorage` and `sessionStorage`
   * Values may be any JSON data type
-  * Listens to `storage` events to detect changes to storage state
+  * `storage` event support
   * Simple API (similar to React's `useState()`)
 
-![storagehooks](https://user-images.githubusercontent.com/164050/119408661-c7927780-bc81-11eb-8b73-4ec699ad3169.gif)
+![storagehooks](https://user-images.githubusercontent.com/164050/119719171-2aac1780-be04-11eb-9892-a2bef582ffc2.gif)
 
 
 # Usage
@@ -33,5 +33,17 @@ function myComponent(props) {
     <input value={sessionValue} onChange={e => setSessionValue(e.target.value)} />
   </>;
 }
-
 ```
+
+# API
+
+## useLocalStorage(key[, initialValue [, options]])
+## useSessionStorage(key[, initialValue [, options]])
+
+|   |   |
+|---|---|
+| `key` | (String) key in storage where value is saved | 
+| `initialValue` | (any) initial value (passed to `useState()`) | 
+| `options.listen` | If `true` (the default), a listener is used to update the value in response to "storage" events | 
+| `options.dispatch` | If `true` (the default), a "storage" event is dispatched to the current window when the value is changed | 
+| *returns* | [value, setValue] tuple, just like `useState()` |

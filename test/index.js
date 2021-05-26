@@ -1,60 +1,90 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDom from 'react-dom';
 import { useLocalStorage, useSessionStorage } from '..';
 
-function renderStorageContents () {
-  document.querySelector('#sessionContents').innerText = JSON.stringify(window.sessionStorage, null, 2);
-  document.querySelector('#localContents').innerText = JSON.stringify(window.localStorage, null, 2);
+function StorageField ({ name, initialValue, useStorageEvents, ...props }) {
+  const options = { listen: useStorageEvents, dispatch: useStorageEvents };
+  const [val, setVal] = /^local/.test(name)
+    ? useLocalStorage(name, initialValue, options)
+    : useSessionStorage(name, initialValue, options);
+  let inputProps;
+  switch (typeof initialValue) {
+    case 'string':
+      inputProps = {
+        type: 'text',
+        value: val ?? '',
+        onChange (e) {
+          setVal(e.target.value);
+        }
+      };
+      break;
+
+    case 'boolean':
+      inputProps = {
+        type: 'checkbox',
+        checked: val,
+        onChange (e) {
+          setVal(e.target.checked);
+        }
+      };
+      break;
+
+    case 'number':
+      inputProps = {
+        type: 'range',
+        value: val,
+        onChange (e) {
+          setVal(Number(e.target.value));
+        }
+      };
+      break;
+
+    default:
+      throw Error(`Invalid default value: ${initialValue}`);
+  }
+
+  return <input className='storage-field' {...inputProps} />;
 }
 
-window.onload = function () {
-  renderStorageContents();
-  window.addEventListener('storage', renderStorageContents);
-};
-
 function App () {
-  const [sessionValue, setSessionValue] = useSessionStorage('sessionValue');
-  const [localValue, setLocalValue] = useLocalStorage('localValue');
-
-  // Test storage event handling.  We create another set of hooks here,
-  // connected to the same storage keys as above.  These should stay synced
-  // if the `storage` event handling is working properly.
-  const [sessionValueClone, setSessionValueClone] = useSessionStorage('sessionValue');
-
-  const [booleanValue, setBooleanValue] = useLocalStorage('booleanValue', true);
-  const [numberValue, setNumberValue] = useLocalStorage('numberValue', true);
+  const [useStorageEvents, setUseStorageEvents] = useState(true);
 
   return (
     <>
-      <h2><code>storagehooks</code> test</h2>
+      <div style={{ display: 'flex', alignItems: 'baseline' }}>
+        <h2 style={{ margin: '0 0 .5em 0' }}><code>storagehooks</code> test</h2>
 
-      <div style={{ display: 'grid', gap: '1em', gridTemplateColumns: '1fr 2fr' }}>
-        <label>sessionStorage.sessionValue</label>
-        <input value={sessionValue ?? ''} onChange={e => setSessionValue(e.target.value)} />
-
-        <label>sessionStorage.sessionValue (clone)</label>
-        <input value={sessionValueClone ?? ''} onChange={e => setSessionValueClone(e.target.value)} />
-
-        <label>localStorage.sessionValue</label>
-        <input value={localValue ?? ''} onChange={e => setLocalValue(e.target.value)} />
-
-        <label>localStorage.booleanValue</label>
-        <input type='checkbox' checked={booleanValue} onChange={e => setBooleanValue(e.target.checked)} />
-        <label>localStorage.numberValue</label>
-        <input type='range' value={numberValue} onChange={e => setNumberValue(Number(e.target.value))} />
+        <label style={{ flexGrow: 1, textAlign: 'right' }}>
+          <input
+            type='checkbox'
+            style={{ verticalAlign: 'middle' }}
+            checked={useStorageEvents}
+            onChange={e => setUseStorageEvents(e.target.checked)}
+          />
+          Listen & Dispatch "storage" events
+        </label>
       </div>
 
-      <hr />
+      <div className='grid' style={{ display: 'grid', gap: '1em', gridTemplateColumns: 'max-content 1fr 1fr' }}>
+        <strong>Location</strong>
+        <strong>Input 1</strong>
+        <strong>Input 2</strong>
 
-      <div style={{ display: 'flex', gap: '1em' }}>
-        <div style={{ display: 'flex', flexGrow: '1fr', flexDirection: 'column', padding: '1em', border: 'solid 1px #ccc', borderRadius: '1em' }}>
-          <strong>sessionStorage</strong>
-          <div id='sessionContents' style={{ fontFamily: 'monospace', whiteSpace: 'pre-wrap' }} />
-        </div>
-        <div style={{ display: 'flex', flexGrow: '1fr', flexDirection: 'column', padding: '1em', border: 'solid 1px #ccc', borderRadius: '1em' }}>
-          <strong>localStorage</strong>
-          <div id='localContents' style={{ fontFamily: 'monospace', whiteSpace: 'pre-wrap' }} />
-        </div>
+        <label>sessionStorage.sessionString</label>
+        <StorageField name='sessionString' useStorageEvents={useStorageEvents} initialValue='' />
+        <StorageField name='sessionString' useStorageEvents={useStorageEvents} initialValue='' />
+
+        <label>localStorage.localString</label>
+        <StorageField name='localString' useStorageEvents={useStorageEvents} initialValue='' />
+        <StorageField name='localString' useStorageEvents={useStorageEvents} initialValue='' />
+
+        <label>localStorage.localBool</label>
+        <StorageField name='localBool' useStorageEvents={useStorageEvents} initialValue />
+        <StorageField name='localBool' useStorageEvents={useStorageEvents} initialValue />
+
+        <label>localStorage.localNumber</label>
+        <StorageField name='localNumber' useStorageEvents={useStorageEvents} initialValue={1} />
+        <StorageField name='localNumber' useStorageEvents={useStorageEvents} initialValue={1} />
       </div>
     </>
   );
