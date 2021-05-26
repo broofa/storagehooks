@@ -1,6 +1,6 @@
 {
   "name": "storagehooks",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "React hooks for accessing state in `localStorage` and `sessionStorage`, with support for encoding values as JSON and tracking `storage` events",
   "main": "index.js",
   "type": "module",
